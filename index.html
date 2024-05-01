@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Disciplines Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    li span {
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    li span.crossed {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <h1>Daily Disciplines</h1>
+  <ul id="disciplines">
+    <li>Did you wake up at 4 AM? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you keep to your written Nutrition Plan, including weighing all your food? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you keep to your written Workout Plan? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Are you free from all the following Vices Alcohol, Drugs, Smoking, Vaping, Porn, Masturbation, Gambling, Lying, Cheating, Stealing ? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you listen to minimally 30mins of positive inspirational information? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you post something inspirational to your Fb or Instagram? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you demand you FEEL POWERFUL after successfully completing each task today? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you read your Life Statement at least 3 times throughout the day? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you do your Visualisation twice today - one of the times must be just before you go to sleep? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you do your Diary/Journal? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you do your AUM Meditation or PRAYER? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you wakeup and go to the gym this morning OR complete 50 Burpees OR 100 Bodyweight Squats? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you plan your day Written plan - ideally use software such as Google Calendar or Outlook for appointments and Google Tasks or ASANA for tasks? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you priortise your tasks - Important to have "PRIORITY TASKS" that must be completed today - no excuses? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>Did you complete all HIGH PRIORITY tasks for the day? <span onclick="crossOff(this)">&#10003;</span></li>
+    <li>DID YOU ANSWER YES TO ALL QUESTIONS? <span onclick="crossOff(this)">&#10003;</span></li>
+    <!-- Add more disciplines here -->
+  </ul>
+
+  <h2>Leaderboard</h2>
+  <ul id="leaderboard">
+    <!-- Leaderboard entries will be populated here -->
+  </ul>
+
+  <h2>Countdown Timer</h2>
+  <div id="timer">00:00:00</div>
+
+  <script>
+    const disciplines = document.getElementById('disciplines');
+    const leaderboard = document.getElementById('leaderboard');
+    const timer = document.getElementById('timer');
+
+    // Dummy data for illustration purposes
+    const users = [
+      { name: 'Jack', day: 14 },
+      { name: 'John', day: 8 },
+      { name: 'Jane', day: 12 }
+    ];
+
+    // Function to cross off a discipline
+    function crossOff(span) {
+      span.classList.toggle('crossed');
+    }
+
+    // Function to populate the leaderboard
+    function populateLeaderboard() {
+      users.sort((a, b) => b.day - a.day); // Sort users by day in descending order
+
+      leaderboard.innerHTML = '';
+      users.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = `${user.name} - Day ${user.day}`;
+        leaderboard.appendChild(li);
+      });
+    }
+
+    // Function to start the countdown timer
+    function startTimer() {
+      const countDownDate = new Date().setHours(24, 0, 0, 0); // Set the countdown target to midnight
+      const x = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        timer.innerHTML = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        if (distance < 0) {
+          clearInterval(x);
+          timer.innerHTML = 'EXPIRED';
+        }
+      }, 1000);
+    }
+
+    // Initialize the leaderboard and start the timer
+    populateLeaderboard();
+    startTimer();
+  </script>
+</body>
+</html>
+
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discipline Tracker</title>
+</head>
+<body>
+  <h1>Welcome to Discipline Tracker</h1>
+  <div id="leaderboard"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        url: '/leaderboard',
+        method: 'GET',
+        success: function(data) {
+          $('#leaderboard').html(data);
+        },
+        error: function(err) {
+          console.error('Error fetching leaderboard:', err);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
